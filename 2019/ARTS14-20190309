@@ -1,0 +1,150 @@
+# ARTS14-20190309
+
+# Algorithm 
+
+### OJ address
+
+Leetcode website : [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)
+
+### Description
+
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+```
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+```
+
+### My Solution in C
+
+```c
+#include <stdlib.h>
+#include <string.h>
+
+int top = 0;
+
+char** generateParenthesis(int n, int* returnSize) {
+    if (n <= 0) {
+        *returnSize = 0;
+        return 0;
+    }
+    top = 0;
+    char **returnArray = calloc(3000, sizeof(char *));
+    char * newArray = calloc(n*2+1, sizeof(char));
+    dfs(0, n, returnArray, newArray, 0, 0);
+    *returnSize = top;
+    return returnArray;
+}
+
+void dfs(int index, int n, char **returnArray, char *newArray, int left, int right) {
+    if (right == n) {
+        newArray[n*2] = '\0';
+        char *array = calloc(n*2+1, sizeof(char));
+        memcpy(array, newArray, n*2+1);
+        returnArray[top++] = array;
+        return;
+    }
+    if (left < n) {
+        newArray[index] = '(';
+        dfs(index+1, n, returnArray, newArray, left+1, right);
+    }
+    if (right < left) {
+        newArray[index] = ')';
+        dfs(index+1, n, returnArray, newArray, left, right+1);
+    }
+}
+```
+
+### My Idea
+
+这是一个很经典的DFS题目，比较easy，但是要注意几个坑：
+
+1. 数组要足够大，不然会报Runtime错误，不要仅仅通过n*n*n*n以为数组就这么大，其实比你认为的要大很多。
+2. 使用memcpy方法时，一定要记得长度和数组长度相同，不然会报错。
+
+
+# Review
+
+# Review
+
+[Why I Deleted All My Social Media Accounts](https://humanparts.medium.com/why-i-deleted-all-my-social-media-accounts-8847726863)
+
+why not sent real life to social media?
+
+The knowledge that people saw my pain and didn’t seem to care enough to reach out was worse than the actual cause of my anxiety.
+
+because everyone loves a happy ending, a triumphant comeback story.
+
+# Tips
+
+分享解决的一个Bug ， 从iOS页面进入React Native页面会出现内存增加不释放问题，每次进入退出就会一直增加，然后看了下我们的方法，如下:
+
+```swift
+    override func loadView() {
+        let url = URL(string: "http://localhost:8081/index.bundle?platform=ios")
+        let rcRootView = RCTRootView(bundleURL: url, moduleName: "RN", initialProperties: properties, launchOptions: nil)
+        view = rcRootView
+    }
+```
+
+对，标准的加载RN页面的方式，但是这样加载，就会出现内存泄漏的情况，是因为RTCBridge内存并没有释放掉导致的这个bug.
+
+RCTBridge: 所有的模块都保存在内存的静态常量区域，这个内存空间是在RCTBridge中被初始化的。因此这些模块属于全局的变量，可以在不同的bridge之间共享。
+
+因此每次返回到iOS页面的时候，你要及时将RTCBridge释放掉。
+
+代码如下：
+
+```swift
+    var rtcBridge : RCTBridge?
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    deinit {
+        rtcBridge?.invalidate()
+        rtcBridge = nil;
+    }
+    
+    override func loadView() {
+        let url = URL(string: "http://localhost:8081/index.bundle?platform=ios")
+        let rcRootView = RCTRootView(bundleURL: url, moduleName: "RN", initialProperties: properties, launchOptions: nil)
+        rtcBridge = rcRootView?.bridge
+        view = rcRootView
+    }
+```
+
+这样就可以将内存释放了，这个问题，看上去解决很简单，但不知道多少人不理解原理，而出现这个内存泄漏，而且是很严重的内存泄漏，来回切换几次，程序就会crush了。所以要学学Bottom-up.
+
+# Shares
+
+分享下豆瓣评分，《流浪地球》春节很火，票房很高，但是这个片真的能过8分么？为什么有些人头脑里很多不满，甚至给《流浪地球》打了个一星呢？
+
+把能写出一星热评的影评人和无星热评的影评人放在一起，你会发现他们其实是差不多的人。能写出热评来，他们的教育程序，收入水平，包括看的电影数量都不会有太大差别，但是在这件事上他们不一样。
+
+我是个普通观众，单纯认为《流浪地球》是个好片。
+
+第二级影评人在这种观众的基础之上，认为影片的不足之处带给他们的感受比普通观众更强烈，所以给个差评。
+
+第三级影评人在第二级影评人基础上，认为影片就算有哪些不足之处，考虑到这是中国电影，我们也应该高姿态给予支持。
+
+第四级影评人在第三级影评人基础上，认为民族主义影评之风不可长，所以必须一星体现公平。
+
+第五级影评人本来是不屑影评的，但是他们被第四级的影评人激怒了。。
+
+你在哪一级？品味是最容易表现的不一样。要想真正与众不同，那时需要勇气的。
+
+想要脱颖而出，泥肥创造一些东西，你得做出与众不同的成就来才行，对厉害的任务来说，个人品味哪些根本不重要。
+
+表现上与众不同的人，往往缺乏勇气。骨子里雨中不同的人，从来不缺勇气。
+
+或许在别人眼里，不过是为了显示与众不同而刻意表现出标新立异的家伙，所谓做自己，变成了追求我和大家不一样。
+
