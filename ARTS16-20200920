@@ -1,0 +1,345 @@
+# ARTS16-20200920
+
+## Algorithm 
+
+### OJ address
+
+website : [https://app.glider.ai/practice/problem/basic-programming/make-array-palindrome/problem)
+
+### Description
+
+```
+Make Array Palindrome
+
+For a given array, we need to make array palindrome. Only allowed operation on array is merge. To merge two adjacent elements just simply replace them with their sum. Task is to find minimum number of merge operations to make given array palindrome.
+
+Input
+The first line contains single integer N
+The second line contains N space separated integers
+
+Output
+Minimum number of merge operations to make given array palindrome.
+
+Constraints
+(1 <= N <= 10000)
+
+Example#1
+Input
+3
+20 999 20
+Output
+0
+Explanation: Array is already palindrome
+
+Example#2
+Input
+4
+10 99 44 10
+Output
+1
+Explanation: Merge 99 and 44, result array will be 10 143 10
+```
+
+### Solution in C
+
+```c
+#include <stdio.h>
+
+int solution(int arr[], int n){  
+    int result = 0;
+    int i = 0;
+    int j = n-1;
+    while(i<j) {
+        if (arr[i] == arr[j]) {
+            ++i;
+            --j;
+        }
+        else if (arr[i] < arr[j]) {
+            ++i;
+            ++result;
+            arr[i]+=arr[i-1];
+        }
+        else {
+            --j;
+            ++result;
+            arr[j]+=arr[j+1];
+        }
+    }
+    return result;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    int arr[n];
+    for(int i = 0; i < n; i++) 
+        scanf("%d", &arr[i]);
+    
+    printf("%d\n", solution(arr, n));
+
+    return 0;
+}
+```
+
+### My Idea
+
+It's a so easy question, the solution is merging two adjacent elements to compare the value.
+
+## Review
+
+[How to become a pro with React setState() in 10 minutes](https://www.freecodecamp.org/news/get-pro-with-react-setstate-in-10-minutes-d38251d1c781/)
+
+The article is about SetState how to work like a charm and how to use it correctly. the application UIs are dynamic and change over time, that's why "state" was created.
+
+By the article ,I can understand more rules about using setState()
+
+#### Three Rules
+
+##### 1. Do not modify state directly.
+
+```js
+this.state.fullName = 'levi' //wrong
+
+this.setState({fullName: 'levi'}); //correct
+```
+
+##### 2. State updates maybe asynchronous
+
+React batch multiple setState() calls into a single update for performance, because this.props and this.state maybe updated asynchronously.So don't rely on their values for calculating the next state.
+
+Just like :
+
+```Js
+// Wrong
+this.setState({
+    counter: this.state.counter + this.props.increment
+})
+
+//Correct
+this.setState((state, props) =>({
+    counter: state.counter + props.increment
+}))
+```
+
+##### 3. State Updates are merged
+
+When you call setState(), React merges the object you provide into the current state.  
+
+##### 4. Respect the data flow and avoid state the max
+
+State is often called local or encapsulated. it is not accessible to any component other than the one that owns and sets it. When you setState a prop and use it in your component, you are breaking the flow of the rendering props.
+
+Last but not least: 
+1. Don't forget to avoid the max using state and props
+2. Don't forget setState is async
+3. Don't forget setState can take an object or a function
+4. Don't forget that you should pass a function in when your next state depends on your previous state.
+
+## Tips
+
+RN’s Question: If I fix the height of the bottom part, maybe 200 (area B) and then the height of top part (area A) is flexible, no matter what height about device screen, the height of bottom part always are 200.
+
+![1.png](https://imgur.com/xCpd5G0.png)
+
+When I design the UI, I use a tricky way to resolve this question:
+
+The view styles of the top part:  I set the flex: 1, marginTop: 0, marginBottom: 0
+The view styles of the bottom part, I set the flex:0, marginTop: 'auto', marginBottom:0
+
+It's a really tricky way to resolve this question, and then it works like a charm.
+
+```js
+topVIewContainer: {
+        flex: 1,
+        width: ScreenUtil.screenW,
+        flexDirection: 'column',
+        backgroundColor: 'black',
+        overflow: 'hidden',
+        marginTop: 0,
+        marginBottom: 0,
+},
+bottomViewContainer: {
+        flex:0,
+        flexDirection: 'column',
+        width: ScreenUtil.screenW,
+        height: 200,
+        marginBottom: 0,
+        marginTop: 'auto',
+        backgroundColor: 'white',
+},
+
+```
+
+## Shares 
+
+### Make a Pop-ups windows by Module class
+
+Look at this picture, I will make a pop-ups windows just like this. It's a simple example.
+
+![pic](https://thumbsnap.com/i/erxyKNGw.png?0920)
+
+How to do it? 
+
+At first, You will create a new file, don't do it in your class file, you always remember to separate components, it's OOP‘s core.
+
+The pop-ups windows will show at the front of the page, so you will use "Modal" class to make the window.
+
+I will use "const" to define "PopupWindow" components.I pass the value by props.
+
+Remember two things:
+
+1. don't write css in your JSX, write it in StyleSheet, keeping your code cleaning.
+2. Remember to use PropTypes, it's so convenient to check props format.
+
+Show my code: 
+
+
+```
+import React from 'react'
+import { TouchableOpacity, Text, View, Modal, Image, StyleSheet } from 'react-native'
+import PropTypes from 'prop-types'
+
+const PopupWindow = props => (
+    <Modal
+        transparent={true}
+        animationType={'none'}
+        visible={props.visible}
+    >
+        <View style={styles.mainview}>
+            <View style={styles.imageBackground}
+            >
+                <Text style={styles.mainTitle}>{props.title}</Text>
+                <Text style={styles.subTitle}>{props.content}</Text>
+                <Image
+                    source={{ uri: props.imageURL }}
+                    style={styles.image}
+                >
+                </Image>
+                <TouchableOpacity
+                    activeOpacity={1.0}
+                    style={{ marginTop: 20 }}
+                    onPress={props.clickOpenButton}>
+                    <View style={styles.subView}>
+                        <Text style={styles.buttonText}>Let's start</Text>
+                    </View>
+                </TouchableOpacity>
+                <Text style={styles.noteText}>Powered by Google Forms</Text>
+                <TouchableOpacity
+                    activeOpacity={1.0}
+                    style={styles.buttonTouch}
+                    onPress={props.clickCloseButton}>
+                    <Image source={require('../../../ImageSets/closex.png')} style={styles.closeButton} />
+                </TouchableOpacity>
+            </View>
+        </View>
+    </Modal>
+)
+
+PopupWindow.propTypes = {
+    imageURL: PropTypes.string,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    visible: PropTypes.bool,
+}
+
+const styles = StyleSheet.create({
+    mainview: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff80'
+    },
+    imageBackground: {
+        flexDirection: 'column',
+        width: 280,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        borderRadius: 13,
+        overflow: 'hidden',
+        backgroundColor: '#B9D7E7'
+    },
+    mainTitle: {
+        fontSize: 16,
+        width: 280,
+        color: '#262729',
+        textAlign: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontFamily: 'HelveticaNeue-Bold',
+        marginTop: 40,
+    },
+    subTitle: {
+        fontSize: 14,
+        width: 280,
+        color: '#262729',
+        textAlign: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontFamily: 'HelveticaNeue',
+        marginTop: 10,
+    },
+    image: {
+        width: 115,
+        height: 115,
+        marginTop: 13,
+        alignSelf: 'center'
+    },
+    subView: {
+        flexDirection: 'column', width: 200, height: 45, backgroundColor: '#262729', borderRadius: 22, alignItems: 'center', justifyContent: 'center'
+    },
+    buttonText: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        textAlign: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontFamily: 'HelveticaNeue-Bold',
+    },
+    noteText: {
+        fontSize: 10,
+        width: 280,
+        color: '#262729',
+        textAlign: 'center',
+        justifyContent: 'center',
+        fontFamily: 'HelveticaNeue',
+        marginTop: 7,
+        marginBottom: 9,
+    },
+    buttonTouch: {
+        position: 'absolute', top: 0, right: 0, flexDirection: 'column', width: 44, height: 44, justifyContent: 'center', alignItems: 'center'
+    },
+    closeButton: {
+        height: 15,
+        width: 15,
+        alignSelf: 'center',
+    }
+})
+
+export default PopupWindow
+```
+
+How to use it? 
+
+You can write it in your render void or wherever you like it.
+
+```
+import PopupWindow from '../View/PopupWindow';
+
+render (
+    return(
+    <PopupWindow 
+      imageURL={this.state.popup.image_url} 
+      title={this.state.popup.title} 
+      content={this.state.popup.content} 
+      visible={this.state.showModalWindow}
+      clickOpenButton={this.clickSurveyButton}
+      clickCloseButton={this.clickSurveyClosedButton}
+    />
+    )
+)
+```
+
+
+
