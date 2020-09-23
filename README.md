@@ -13,3 +13,10 @@
 - S -- Share  your experience in work,learning or sth else.
 
 Once you are in the club, you've got the promise of keeping doing this at least a year.
+
+
+
+### Algorithm  - Learning Algorithm
+### Review  - Learning English
+### Tip - Learning Techniques
+### Share - Learning Influence
