@@ -15,8 +15,9 @@
 Once you are in the club, you've got the promise of keeping doing this at least a year.
 
 
+## The purpose of arts
 
-### Algorithm  - Learning Algorithm
-### Review  - Learning English
-### Tip - Learning Techniques
-### Share - Learning Influence
+- Algorithm  - Learning Algorithm
+- Review  - Learning English
+- Tip - Learning Techniques
+- Share - Learning Influence
