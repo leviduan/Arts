@@ -1,0 +1,311 @@
+## Algorithm 
+
+### Leetcode website : 
+
+[1. Two Sum](https://leetcode.com/problems/two-sum/)
+
+### Description
+
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+Example 1:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Output: Because nums[0] + nums[1] == 9, we return [0, 1].
+Example 2:
+
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+Example 3:
+
+Input: nums = [3,3], target = 6
+Output: [0,1]
+
+### Idea
+
+At first I sort the array, and then find these two values by comparison method.
+
+Key point:
+
+1. Quicksort
+2. loops
+3. Array
+
+### Solution - Javascript
+
+```javascript
+var twoSum = function(nums, target) {
+    let storeDic = nums.map((val, index) => {
+        return {
+            val: val,
+            index: index, 
+        }
+    })
+    storeDic.sort((min, max) => {
+        return min.val - max.val
+    })
+    let i=0,j=nums.length-1
+    while(i<j) {
+        let diff = target - storeDic[j].val
+        if (diff > storeDic[i].val) ++i
+        if (diff < storeDic[i].val) --j
+        if (diff == storeDic[i].val) return [storeDic[i].index, storeDic[j].index].sort()
+    }
+    return [0,0]
+};
+```
+
+### Solution - C
+
+```c
+struct object {
+    int val;
+    int index;
+};
+
+static int compare(const void *a, const void *b)
+{
+    return ((struct object *) a)->val - ((struct object *) b)->val;
+}
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize){
+	int i, j;
+    *returnSize = 2;
+    struct object *objs = malloc(numsSize * sizeof(*objs));
+    for (i = 0; i < numsSize; i++) {
+        objs[i].val = nums[i];
+        objs[i].index = i;
+    }
+    qsort(objs, numsSize, sizeof(*objs), compare);
+    
+    int count = 0;
+    int *results = malloc(2 * sizeof(int));
+    i = 0;
+    j = numsSize - 1;
+    while (i < j) {
+        int diff = target - objs[i].val;
+        if (diff > objs[j].val) {
+            while (++i < j && objs[i].val == objs[i - 1].val) {}
+        } else if (diff < objs[j].val) {
+            while (--j > i && objs[j].val == objs[j + 1].val) {}
+        } else {
+            results[0] = objs[i].index;
+            results[1] = objs[j].index;
+            return results;
+        }
+    }
+    return 0;
+}
+```
+
+## Review
+
+Medium Article:  [24 quick-fire JavaScript interview questions](https://medium.com/javascript-in-plain-english/24-quick-fire-javascript-interview-questions-a71f78d03f08)
+
+Reading the article, we can review some knowledge, for example:
+
+1.Explain the difference between “==” and “===”
+
+“==” is used to compare two values irrespective of the datatype of variable.
+“===” is used to compare two values but will be a strict check so will check the value and the datatype match.
+
+2.How do you check if a value is a number?
+
+If you use isNaN() you will have to do additional checks as you can see from the below examples.
+
+```
+isNaN(48) //false
+isNaN(-1.23) //false
+isNaN(5-2) //false
+isNaN('123') //false
+isNaN('Hello Im a real string') //true
+isNaN('2005/12/12') //true
+isNaN('') //false
+isNaN(undefined) //true
+```
+
+3. How do you convert a string to an int?
+
+Number() converts a string to a number. This can be a whole number or point number. These can often be less safe than using parseInt or parseFloat
+
+4. Name the different loops in JavaScript
+
+for/forin/forof/while/dowhile/foreach
+
+5. What is the difference between var , let and const?
+
+var can be redeclared and updated.
+let can be updated but not declared
+const cannot be updated or redeclared.
+
+Scoping rules
+
+Main difference is scoping rules. Variables declared by var keyword are scoped to the immediate function body (hence the function scope) while let variables are scoped to the immediate enclosing block denoted by { } (hence the block scope).
+
+let can also be used to avoid problems with closures. It binds fresh value rather than keeping an old reference.
+
+6. What is the difference between NULL and undefined ?
+
+NULL is an assignment value. It can be assigned to a variable as a representation of no value.
+undefined means a variable has been declared but has not yet been assigned a value
+
+7. What is the typeof operator used for?
+
+typeof the operator returns a string indicating the type of the unevaluated operand.
+
+8. What is the difference between local storage & session storage?
+
+local persists until explicitly deleted. Changes made are saved and available for all current and future visits to the site.
+
+session changes are only available per tab. Changes made are saved and available for the current page in that tab until it is closed. Once it is closed, the stored data is deleted.
+
+9. What is a callback?
+
+A callback function, also known as a higher-order function, is a function that is passed to another function as a parameter.
+
+## Tip
+
+Q: Multiple modals not working in react native
+
+When tapping on first modal window. I implemented the same but the second modal not opening.
+
+So, I check the github, and found a good way to do it. The only way I can have two modals at the same time is by nesting the second inside the first.
+
+In my case, the second modal is a loading page based on something being done in the first modal.
+
+```js
+// Modal_1
+<Modal>
+    // Modal_2
+    <Modal>               
+    </Modal>
+</Modal>
+```
+
+## Share | React native - react-native-camera
+
+When I developed this page, I needed a camera library, so I searched the keyword on google and then founded a great library, it called ``react-native-camera``
+
+![Page](https://thumbsnap.com/s/yFzjqAgK.png?0927)
+
+### Installation
+
+```
+npm install --save react-native-camera@git+https://git@github.com/react-native-community/react-native-camera.git
+
+or
+
+yarn add react-native-camera@git+https://git@github.com/react-native-community/react-native-camera.git
+```
+
+### Use
+
+At first, we write the RNCamera class and get the view's height and width from the onLayout void, onLayout void is used to output the same size picture.
+
+Secondly, we check the device's authority, if it doesn't include the authority to visit the camera, jumping to the Setting page.
+
+Thirdly, we write void about taking Picture, we can get the output picture by the void.
+
+```javascript
+import { RNCamera } from 'react-native-camera';
+
+constructor(props) {
+    super(props);
+    this.state = {
+        cameraType: RNCamera.Constants.Type.back,
+        takePhotoImageUrlString: '',
+        imagePicRealRect: {width: 0, height: 0}
+    }
+}
+
+cameraView = () => {
+    return (
+        <View style={styles.cameraContainer} onLayout={(event) => this.onLayout(event)}>
+            <RNCamera
+                ref={ref => {
+                    this.camera = ref;
+                }}
+                captureAudio={false}
+                style={styles.preview}
+                type={this.state.cameraType}
+                flashMode={RNCamera.Constants.FlashMode.off}
+                >
+                 {({ camera, status }) => {
+                    if (status === 'NOT_AUTHORIZED') {
+                        Alert.alert(
+                            'We need your permission to use your camera', '',
+                            [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () => this.props.navigation.navigate('MyClosetPage'),
+                                    style: 'cancel',
+                                },
+                                { text: 'Ok', onPress: () => Linking.openURL('app-settings:')},
+                            ],
+                            { cancelable: false },
+                        );
+                    }
+                }}
+            </RNCamera>
+        </View>
+    )
+}
+
+onLayout = (event)=>{
+    this.setState({
+        imagePicRealRect: {width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height}
+    })
+}
+
+takePictureVoid = async () => {
+    if (this.camera) {
+        const options = { quality: 0.5, base64: true, width: this.state.imagePicRealRect.width*2, height: this.state.imagePicRealRect.height*2, fixOrientation: true, orientation: 1};
+
+        this.camera.takePictureAsync(options).then(res=> {
+
+            this.setState({
+                takePhotoImageUrlString: res.uri,
+            },()=> this.uploadImageRequest())
+        }).catch(error=> {
+            Alert.alert(
+                'We need your permission to use your camera', '',
+                [
+                    {
+                        text: 'Cancel',
+                        onPress: () => this.props.navigation.navigate('MyClosetPage'),
+                        style: 'cancel',
+                    },
+                    { text: 'Ok', onPress: () => Linking.openURL('app-settings:')},
+                ],
+                { cancelable: false },
+            );
+        })
+        
+    }
+};
+
+cameraContainer: {
+    flex: 1,
+    width: ScreenWidth,
+    flexDirection: 'column',
+    overflow: 'hidden',
+    marginTop: 0,
+    marginBottom: 0,
+},
+```
+
+### PS
+
+if you have some question, you can write the question on the discuss by English or Chinese. thank you very much.
+
+
+
+
+
+
+
